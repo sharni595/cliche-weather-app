@@ -3,7 +3,8 @@ var cityNameSearch = document.getElementById("city-name");
 var cityNameToday = document.getElementById("city-today");
 var uvIndex = document.getElementById("uv-index");
 var todaysWeather = document.querySelector("todays-weather");
-
+var searchHistory = document.getElementById("search-history");
+var string = [];
 
 //function to receive searc value and fush to other functions
 function submitNameSearch(event){
@@ -21,20 +22,35 @@ function submitNameSearch(event){
     }
 
     //set search history to local storage 
-    localStorage.setItem("searchHistoryList", JSON.stringify(cityName));
-    var searchHistory = document.getElementById("search-history");
-    var history = JSON.parse(localStorage.getItem("searchHistoryList"))
-    var string = []
-    history.push(string);
-    history.forEach(function(e){
-        var historyList = document.createElement("<span>")
-        historyList.textContent = history;
-        history.classList.add("list-item flex-row justify-space-between align-center");
+    
+    string.push(cityName);
+    localStorage.setItem("searchHistoryList", JSON.stringify(string));
+    
+    //var history = JSON.parse(localStorage.getItem("searchHistoryList"))
+    searchHistory.innerHTML = "";
+    string.forEach(function(item){
+        var historyList = document.createElement("li");
+        historyList.textContent = item;
+        historyList.classList.add("list-group-item", "flex-row", "justify-space-between", "align-center");
         searchHistory.appendChild(historyList);
+        historyList.addEventListener("click", function() {
+            historyNameSearch(item);
+        })
+        console.log("hello");
+
     })
 
 
 }
+
+
+
+function historyNameSearch(searchCity){
+    searchWeather(searchCity);
+    cityNameToday.textContent = searchCity + moment().format("(MM/DD/YYYY)");
+}
+//create event listener for click of <li> 
+//does the same thing as submitNameSearch, but takes search history name instead of input name
 
 //api to pull current weather conditions
 function searchWeather(city){
@@ -84,12 +100,13 @@ function getForecast(searchValue){
     fetch(apiUrl).then(function(response){
         response.json().then(function(data){
             //uv index
-            console.log(data);
-            for (var i = 4; i < 40; i += 8){
+            console.log("hello", data);
+            for (var i = 5; i < 40; i += 8){
                 $("#future-forecast").append(`
-                <div class="card">
-                    <h6 class="future-date"></h6>
-                    <img src="http://openweathermap.org/img/wn/${data.list[i].weather[0].icon}@2x.png">
+                <div class="card col-2 future-day">
+                    <h6 class="future-date" style="float: left;"></h6>
+                    <img class="future-icon" src="http://openweathermap.org/img/wn/${data.list[i].weather[0].icon}@2x.png">
+                    <hr>
                     <ul>
                         <li>Temp: ${data.list[i].main.temp}&#176</li>
                         <li>Wind: ${data.list[i].wind.speed} mph</li>
@@ -109,9 +126,14 @@ function getForecast(searchValue){
 }
 
 
-//event listener for button click
-searchButton.addEventListener("click", function(){
-    
+//event listener for button click when city is submitted through input element
+searchButton.addEventListener("click", function(){   
+    //calls function that searches using input and saves to local storage
     submitNameSearch();
-  
 });
+
+//event listener for when user clicks city from search history 
+// searchHistory.addEventListener("click", function(){
+//     //calls function that searches using city from  history list
+//     historyNameSearch();
+// })

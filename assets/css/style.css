@@ -3,16 +3,30 @@
     border: 0;
 }
 
-.container{
-    margin: 10px;
-    padding: 0;
-    width: 100vw;
+li{
+    list-style: none;
 }
 
+
+/* header */
 header{
     background-color: aquamarine;
 }
 
 header, h2{
     text-align: center;
+}
+
+/* side search bar */
+
+/* todays weather */
+.view-weather{
+    width: 100vw;
+}
+/* 5 day forecast */
+.future-day{
+    margin: 10px 10px;
+}
+.future-icon{
+    width: 20px;
 }

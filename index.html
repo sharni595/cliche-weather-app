@@ -12,19 +12,24 @@
     <header>
        <h1>Weather Dashboard</h1>
     </header>
-    <main class="container">
+    <main class="container-fluid">
         <div class="row">
         <!-- side section for inputting city name and viewing search history -->
-        <section class="col-4">
+        <section class="col-3">
             <div class="card">
                 <label for="city" class="card-title">Search For a City:</label>
                 <input name="city" id="city-name" type="text" class="form-control" />
                 <button id="search-button">Search</button>
             </div>
-            <div id="search-history"></div>
+            <hr>
+            <div class="">
+                <ul id="search-history" class="list-group">
+
+                </ul>
+            </div>
         </section>
         <!-- main section that displays current and future weather -->
-        <section class="col-8">
+        <section class="col-9 view-weather">
             <div id="todays-weather">
                 <h2 id="city-today" style="float: left;"><span id="todays-date"></span></h2>
                 <img id="icon" />
@@ -44,7 +49,7 @@
                     </li>
                 </ul>
             </div>
-            <div id="future-forecast">
+            <div id="future-forecast" class="row">
                 
             </div>
 
