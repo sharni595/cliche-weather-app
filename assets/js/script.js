@@ -4,22 +4,27 @@ var cityNameToday = document.getElementById("city-today");
 var uvIndex = document.getElementById("uv-index");
 var todaysWeather = document.querySelector("todays-weather");
 
+
+//function to receive searc value and fush to other functions
 function submitNameSearch(event){
 
     $("#future-forecast").html("");
     
     var cityName = cityNameSearch.value.trim();
 
+
     if (cityName){
         searchWeather(cityName);
         cityNameToday.textContent = cityName + moment().format("(MM/DD/YYYY)");
         cityNameSearch.value = "";
+        
     }else{
         alert("Please enter a valid city name");
     }
 
 }
 
+//api to pull current weather conditions
 function searchWeather(city){
     var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=6d97afac271bf76bda029031ba851c8a&units=imperial";
 
@@ -29,11 +34,15 @@ function searchWeather(city){
             getUvIndex(data.coord.lat, data.coord.lon);
             getForecast(city);
             console.log(data, city);
+            $("#icon").attr("src", "http://openweathermap.org/img/wn/" + data.weather[0].icon + ".png");
+            $("#temperature").text(data.main.humidity);
+            $("#wind").text(data.wind.speed);
+            $("#humidity").text(data.main.temp);
         });
     });
 };
 
-
+//api to find UV index and assign color
 function getUvIndex(latitude, longitude){
     var apiUrl = "http://api.openweathermap.org/data/2.5/uvi?lat=" + latitude + "&lon=" + longitude + "&appid=6d97afac271bf76bda029031ba851c8a";
 
@@ -55,6 +64,7 @@ function getUvIndex(latitude, longitude){
     });
 }
 
+//api to pull 5 day forecast and display dynamically
 function getForecast(searchValue){
 
     var apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + searchValue + "&appid=6d97afac271bf76bda029031ba851c8a&units=imperial";
@@ -69,9 +79,9 @@ function getForecast(searchValue){
                     <h6 class="future-date"></h6>
                     <img src="http://openweathermap.org/img/wn/${data.list[i].weather[0].icon}@2x.png">
                     <ul>
-                        <li>Temp: ${data.list[i].main.temp}</li>
-                        <li>Wind: ${data.list[i].wind.speed}</li>
-                        <li>Humidity: ${data.list[i].main.humidity}</li>
+                        <li>Temp: ${data.list[i].main.temp}&#176</li>
+                        <li>Wind: ${data.list[i].wind.speed} mph</li>
+                        <li>Humidity: ${data.list[i].main.humidity}%</li>
                     </ul>
                 </div>
                 `)
@@ -87,15 +97,7 @@ function getForecast(searchValue){
 }
 
 
-//function to display all dynamic info on the page 
-function displayWeather(weather, searchValue){
-    
-    cityNameToday.textContent = "";
-    todaysWeather.textContent = "";
-    
-    
-}
-
+//event listener for button click
 searchButton.addEventListener("click", function(){
     submitNameSearch();
 });
