@@ -12,15 +12,27 @@ function submitNameSearch(event){
     
     var cityName = cityNameSearch.value.trim();
 
-
     if (cityName){
         searchWeather(cityName);
         cityNameToday.textContent = cityName + moment().format("(MM/DD/YYYY)");
         cityNameSearch.value = "";
-        
     }else{
         alert("Please enter a valid city name");
     }
+
+    //set search history to local storage 
+    localStorage.setItem("searchHistoryList", JSON.stringify(cityName));
+    var searchHistory = document.getElementById("search-history");
+    var history = JSON.parse(localStorage.getItem("searchHistoryList"))
+    var string = []
+    history.push(string);
+    history.forEach(function(e){
+        var historyList = document.createElement("<span>")
+        historyList.textContent = history;
+        history.classList.add("list-item flex-row justify-space-between align-center");
+        searchHistory.appendChild(historyList);
+    })
+
 
 }
 
@@ -99,5 +111,7 @@ function getForecast(searchValue){
 
 //event listener for button click
 searchButton.addEventListener("click", function(){
+    
     submitNameSearch();
+  
 });
