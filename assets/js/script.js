@@ -9,7 +9,7 @@ var string = [];
 //function to receive searc value and fush to other functions
 function submitNameSearch(event){
 
-    $("#future-forecast").html("");
+    $("#future-forecast").empty();
     
     var cityName = cityNameSearch.value.trim();
 
@@ -48,6 +48,7 @@ function submitNameSearch(event){
 function historyNameSearch(searchCity){
     searchWeather(searchCity);
     cityNameToday.textContent = searchCity + moment().format("(MM/DD/YYYY)");
+    $("#future-forecast").empty();
 }
 //create event listener for click of <li> 
 //does the same thing as submitNameSearch, but takes search history name instead of input name
