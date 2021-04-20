@@ -31,7 +31,7 @@ function submitNameSearch(event){
     string.forEach(function(item){
         var historyList = document.createElement("li");
         historyList.textContent = item;
-        historyList.classList.add("list-group-item", "flex-row", "justify-space-between", "align-center");
+        historyList.classList.add("flex-row", "justify-space-between", "align-center", "search-list");
         searchHistory.appendChild(historyList);
         historyList.addEventListener("click", function() {
             historyNameSearch(item);
