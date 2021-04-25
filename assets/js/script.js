@@ -4,9 +4,9 @@ var cityNameToday = document.getElementById("city-today");
 var uvIndex = document.getElementById("uv-index");
 var todaysWeather = document.querySelector("todays-weather");
 var searchHistory = document.getElementById("search-history");
-var string = [];
+var citiesArray = JSON.parse(localStorage.getItem("searchHistoryList")) || [];
 
-//function to receive searc value and fush to other functions
+//function to receive search value and push to other functions
 function submitNameSearch(event){
 
     $("#future-forecast").empty();
@@ -23,29 +23,34 @@ function submitNameSearch(event){
 
     //set search history to local storage 
     
-    string.push(cityName);
-    localStorage.setItem("searchHistoryList", JSON.stringify(string));
-    
+    citiesArray.push(cityName);
+    localStorage.setItem("searchHistoryList", JSON.stringify(citiesArray));
+    renderBtns();
+    console.log(citiesArray);
     //var history = JSON.parse(localStorage.getItem("searchHistoryList"))
+   
+}
+
+function renderBtns(){
     searchHistory.innerHTML = "";
-    string.forEach(function(item){
-        var historyList = document.createElement("li");
-        historyList.textContent = item;
-        historyList.classList.add("flex-row", "justify-space-between", "align-center", "search-list");
+    for (i = 0; i < citiesArray.length; i++){
+        var historyList = document.createElement("button");
+        historyList.textContent = citiesArray[i];
+        historyList.classList.add("btn", "flex-row", "justify-space-between", "align-center", "search-list");
+        historyList.setAttribute("data-city", citiesArray[i])
         searchHistory.appendChild(historyList);
-        historyList.addEventListener("click", function() {
-            historyNameSearch(item);
-        })
-        console.log("hello");
-
-    })
-
-
+        //console.log(citiesArray[i]);
+        
+        historyList.addEventListener("click", function(){
+            historyNameSearch(this.getAttribute("data-city"));
+        });
+    }
 }
 
 
 
 function historyNameSearch(searchCity){
+    console.log(searchCity);
     searchWeather(searchCity);
     cityNameToday.textContent = searchCity + moment().format("(MM/DD/YYYY)");
     $("#future-forecast").empty();
@@ -62,7 +67,7 @@ function searchWeather(city){
             //uv index
             getUvIndex(data.coord.lat, data.coord.lon);
             getForecast(city);
-            console.log(data, city);
+            
             $("#icon").attr("src", "http://openweathermap.org/img/wn/" + data.weather[0].icon + ".png");
             $("#temperature").text(data.main.humidity);
             $("#wind").text(data.wind.speed);
@@ -73,11 +78,11 @@ function searchWeather(city){
 
 //api to find UV index and assign color
 function getUvIndex(latitude, longitude){
-    var apiUrl = "http://api.openweathermap.org/data/2.5/uvi?lat=" + latitude + "&lon=" + longitude + "&appid=6d97afac271bf76bda029031ba851c8a";
+    var apiUrl = "https://api.openweathermap.org/data/2.5/uvi?lat=" + latitude + "&lon=" + longitude + "&appid=6d97afac271bf76bda029031ba851c8a";
 
     fetch(apiUrl).then(function(response){
         response.json().then(function(data){
-            console.log(data.value);
+            
             uvIndex.textContent = data.value;
 
             if (uvIndex.textContent < 3){
@@ -101,7 +106,7 @@ function getForecast(searchValue){
     fetch(apiUrl).then(function(response){
         response.json().then(function(data){
             //uv index
-            console.log("hello", data);
+            
             for (var i = 5; i < 40; i += 8){
                 $("#future-forecast").append(`
                 <div class="card col-2 future-day">
@@ -119,7 +124,7 @@ function getForecast(searchValue){
             }
             for (var x = 1; x <= 5; x++){
                 $(".future-date").eq(x - 1).text(moment().add([x], "d").format("(MM/DD/YYYY)"));
-                console.log($(".future-date").text());
+                
             }
         });
 
@@ -133,6 +138,7 @@ searchButton.addEventListener("click", function(){
     submitNameSearch();
 });
 
+renderBtns();
 //event listener for when user clicks city from search history 
 // searchHistory.addEventListener("click", function(){
 //     //calls function that searches using city from  history list
